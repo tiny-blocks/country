@@ -29,7 +29,7 @@ final class CountryTest extends TestCase
         $template = 'Alpha code <%s> is invalid.';
 
         $this->expectException(InvalidAlphaCode::class);
-        $this->expectErrorMessage(sprintf($template, $alphaCode));
+        $this->expectExceptionMessage(sprintf($template, $alphaCode));
 
         Country::from(alphaCode: $alphaCode);
     }
@@ -37,7 +37,7 @@ final class CountryTest extends TestCase
     public function testInvalidAlphaCodeImplementation(): void
     {
         $this->expectException(InvalidAlphaCodeImplementation::class);
-        $this->expectErrorMessage('The alpha code implementation <TinyBlocks\Country\Mock\AlphaCodeMock> is invalid.');
+        $this->expectExceptionMessage('The alpha code implementation <TinyBlocks\Country\Mock\AlphaCodeMock> is invalid.');
 
         Country::from(alphaCode: AlphaCodeMock::SWITZERLAND);
     }
