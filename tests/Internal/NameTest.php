@@ -12,7 +12,7 @@ final class NameTest extends TestCase
     public function testEmptyCountryName(): void
     {
         $this->expectException(EmptyCountryName::class);
-        $this->expectErrorMessage('Country name cannot be empty.');
+        $this->expectExceptionMessage('Country name cannot be empty.');
 
         Name::from(name: '');
     }
