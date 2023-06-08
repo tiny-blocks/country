@@ -8,6 +8,6 @@ final class EmptyCountryName extends RuntimeException
 {
     public function __construct()
     {
-        parent::__construct('Country name cannot be empty.');
+        parent::__construct(message: 'Country name cannot be empty.');
     }
 }
