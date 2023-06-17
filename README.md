@@ -36,9 +36,9 @@ representation of a country that groups the codes and its name.
 ```php
 $alpha2Code = Alpha2Code::UNITED_STATES_OF_AMERICA;
 
-echo $alpha2Code->name;              # UNITED_STATES_OF_AMERICA
-echo $alpha2Code->value;             # US
-echo $alpha2Code->toAlpha3()->value; # USA
+$alpha2Code->name;              # UNITED_STATES_OF_AMERICA
+$alpha2Code->value;             # US
+$alpha2Code->toAlpha3()->value; # USA
 ```
 
 ### Alpha3Code
@@ -49,9 +49,9 @@ country name.
 ```php
 $alpha3Code = Alpha3Code::UNITED_STATES_OF_AMERICA;
 
-echo $alpha3Code->name;              # UNITED_STATES_OF_AMERICA
-echo $alpha3Code->value;             # USA
-echo $alpha3Code->toAlpha2()->value; # US
+$alpha3Code->name;              # UNITED_STATES_OF_AMERICA
+$alpha3Code->value;             # USA
+$alpha3Code->toAlpha2()->value; # US
 ```
 
 ### Country
@@ -65,9 +65,9 @@ country name is not given in the `from` method, then the default is to assume an
 ```php
 $country = Country::from(alphaCode: Alpha2Code::UNITED_STATES_OF_AMERICA);
 
-echo $country->name;          # United States of America
-echo $country->alpha2->value; # US
-echo $country->alpha3->value; # USA
+$country->name;          # United States of America
+$country->alpha2->value; # US
+$country->alpha3->value; # USA
 ```
 
 or
@@ -75,9 +75,9 @@ or
 ```php
 $country = Country::from(alphaCode: 'US');
 
-echo $country->name;          # United States of America
-echo $country->alpha2->value; # US
-echo $country->alpha3->value; # USA
+$country->name;          # United States of America
+$country->alpha2->value; # US
+$country->alpha3->value; # USA
 ```
 
 Creating an instance passing the country name.
@@ -85,14 +85,16 @@ Creating an instance passing the country name.
 ```php
 $country = Country::from(alphaCode: Alpha3Code::UNITED_STATES_OF_AMERICA, name: 'United States');
 
-echo $country->name;          # United States
-echo $country->alpha2->value; # US
-echo $country->alpha3->value; # USA
+$country->name;          # United States
+$country->alpha2->value; # US
+$country->alpha3->value; # USA
 ```
+
+<div id='license'></div>
 
 ## License
 
-Math is licensed under [MIT](/LICENSE).
+Country is licensed under [MIT](LICENSE).
 
 <div id='contributing'></div>
 
