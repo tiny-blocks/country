@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TinyBlocks\Country\Internal;
 
 use TinyBlocks\Country\Internal\Exceptions\EmptyCountryName;
 
-final class Name
+final readonly class Name
 {
-    private static array $prepositions = ['Of', 'And', 'The'];
+    private array $prepositions;
 
-    private function __construct(public readonly string $value)
+    private function __construct(public string $value)
     {
         if (empty($this->value)) {
             throw new EmptyCountryName();
         }
+
+        $this->prepositions = ['Of', 'And', 'The'];
     }
 
     public static function from(string $name): Name
@@ -28,12 +32,12 @@ final class Name
     private function normalizeName(): Name
     {
         $subject = mb_convert_case($this->value, MB_CASE_TITLE);
-        $name = str_replace('_', ' ', $subject);
+        $normalized = str_replace('_', ' ', $subject);
 
-        foreach (self::$prepositions as $word) {
-            $name = str_replace($word, mb_strtolower($word), $name);
+        foreach ($this->prepositions as $word) {
+            $normalized = str_replace($word, strtolower($word), $normalized);
         }
 
-        return new Name(value: $name);
+        return new Name(value: $normalized);
     }
 }
