@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TinyBlocks\Country;
 
 use TinyBlocks\Country\Internal\AlphaCode;
@@ -13,27 +15,14 @@ final class Country implements ValueObject
 {
     use ValueObjectAdapter;
 
-    private function __construct(
-        public readonly string $name,
-        public readonly Alpha2Code $alpha2,
-        public readonly Alpha3Code $alpha3
-    ) {
+    private const ALPHA2_CODE_LENGTH = 2;
+
+    private function __construct(public string $name, public Alpha2Code $alpha2, public Alpha3Code $alpha3)
+    {
     }
 
-    public static function from(string|AlphaCode $alphaCode, string|null $name = null): Country
+    public static function from(AlphaCode $alphaCode, string|null $name = null): Country
     {
-        if (is_string($alphaCode)) {
-            $alphaCodeFrom = strlen($alphaCode) === 2
-                ? Alpha2Code::tryFrom(value: $alphaCode)
-                : Alpha3Code::tryFrom(value: $alphaCode);
-
-            if (is_null($alphaCodeFrom)) {
-                throw new InvalidAlphaCode(alphaCode: $alphaCode);
-            }
-
-            return self::from(alphaCode: $alphaCodeFrom, name: $name);
-        }
-
         $name = empty($name)
             ? Name::fromAlphaCode(alphaCode: $alphaCode)->value
             : Name::from(name: $name)->value;
@@ -47,5 +36,18 @@ final class Country implements ValueObject
         }
 
         throw new InvalidAlphaCodeImplementation(class: $alphaCode::class);
+    }
+
+    public static function fromString(string $alphaCode, string|null $name = null): Country
+    {
+        $alphaCodeFrom = strlen($alphaCode) === self::ALPHA2_CODE_LENGTH
+            ? Alpha2Code::tryFrom(value: $alphaCode)
+            : Alpha3Code::tryFrom(value: $alphaCode);
+
+        if (is_null($alphaCodeFrom)) {
+            throw new InvalidAlphaCode(alphaCode: $alphaCode);
+        }
+
+        return self::from(alphaCode: $alphaCodeFrom, name: $name);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TinyBlocks\Country;
 
 use TinyBlocks\Country\Internal\AlphaCode;
