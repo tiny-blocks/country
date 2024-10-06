@@ -30,7 +30,7 @@ final class NameTest extends TestCase
         $name = Name::fromAlphaCode(alphaCode: $alphaCode);
 
         /** @Then the Name value should match the expected value */
-        self::assertEquals($expected, $name->value);
+        self::assertSame($expected, $name->value);
     }
 
     public static function dataProvider(): array
