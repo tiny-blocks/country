@@ -41,7 +41,7 @@
     },
     "require": {
         "php": "^8.2",
-        "tiny-blocks/value-object": "^2"
+        "tiny-blocks/value-object": "^3"
     },
     "require-dev": {
         "phpmd/phpmd": "^2.15",

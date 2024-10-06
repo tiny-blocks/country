@@ -21,9 +21,9 @@ final class CountryTest extends TestCase
         $actual = Country::from(alphaCode: $alphaCode, name: $name);
 
         /** @Then the Country properties should match the expected values */
-        self::assertEquals($expected['name'], $actual->name);
-        self::assertEquals($expected['alpha2Code'], $actual->alpha2);
-        self::assertEquals($expected['alpha3Code'], $actual->alpha3);
+        self::assertSame($expected['name'], $actual->name);
+        self::assertSame($expected['alpha2Code'], $actual->alpha2);
+        self::assertSame($expected['alpha3Code'], $actual->alpha3);
     }
 
     #[DataProvider('fromStringAlphaCodeDataProvider')]
@@ -34,9 +34,9 @@ final class CountryTest extends TestCase
         $actual = Country::fromString(alphaCode: $alphaCode, name: $name);
 
         /** @Then the Country properties should match the expected values */
-        self::assertEquals($expected['name'], $actual->name);
-        self::assertEquals($expected['alpha2Code'], $actual->alpha2);
-        self::assertEquals($expected['alpha3Code'], $actual->alpha3);
+        self::assertSame($expected['name'], $actual->name);
+        self::assertSame($expected['alpha2Code'], $actual->alpha2);
+        self::assertSame($expected['alpha3Code'], $actual->alpha3);
     }
 
     #[DataProvider('invalidAlphaCodesDataProvider')]
@@ -71,7 +71,7 @@ final class CountryTest extends TestCase
         $alpha3Codes = array_map(static fn(Alpha3Code $alpha3Code): string => $alpha3Code->name, Alpha3Code::cases());
 
         /** @Then Alpha2Code and Alpha3Code should represent the same countries */
-        self::assertEquals($alpha2Codes, $alpha3Codes);
+        self::assertSame($alpha2Codes, $alpha3Codes);
     }
 
     public static function fromAlphaCodeDataProvider(): array

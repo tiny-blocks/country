@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TinyBlocks\Country;
 
 use TinyBlocks\Country\Internal\AlphaCode;
-use TinyBlocks\Country\Internal\AlphaCodeAdapter;
+use TinyBlocks\Country\Internal\AlphaCodeMapper;
 
 /**
  * Alpha-2 code – a two-letter code that represents a country name, recommended as the general purpose code.
@@ -15,7 +15,7 @@ use TinyBlocks\Country\Internal\AlphaCodeAdapter;
  */
 enum Alpha2Code: string implements AlphaCode
 {
-    use AlphaCodeAdapter;
+    use AlphaCodeMapper;
 
     case AFGHANISTAN = 'AF';
     case ALAND_ISLANDS = 'AX';
@@ -261,7 +261,7 @@ enum Alpha2Code: string implements AlphaCode
 
     public function toAlpha3(): Alpha3Code
     {
-        $value = $this->getBy(name: $this->name, inCases: Alpha3Code::cases())->value;
+        $value = $this->getBy(name: $this->name, alphaCodes: Alpha3Code::cases())->value;
         return Alpha3Code::from(value: $value);
     }
 }
