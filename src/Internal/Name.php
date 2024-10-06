@@ -26,7 +26,7 @@ final readonly class Name
 
     public static function fromAlphaCode(AlphaCode $alphaCode): Name
     {
-        return self::from(name: $alphaCode->getName())->normalizeName();
+        return self::from(name: $alphaCode->name)->normalizeName();
     }
 
     private function normalizeName(): Name

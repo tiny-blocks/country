@@ -9,11 +9,11 @@ use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCodeImplementation;
 use TinyBlocks\Country\Internal\Name;
 use TinyBlocks\Vo\ValueObject;
-use TinyBlocks\Vo\ValueObjectAdapter;
+use TinyBlocks\Vo\ValueObjectBehavior;
 
 final class Country implements ValueObject
 {
-    use ValueObjectAdapter;
+    use ValueObjectBehavior;
 
     private const ALPHA2_CODE_LENGTH = 2;
 
