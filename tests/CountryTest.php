@@ -6,7 +6,6 @@ namespace TinyBlocks\Country;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use TinyBlocks\Country\Internal\AlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCodeImplementation;
 use TinyBlocks\Country\Models\AlphaCodeXpto;
