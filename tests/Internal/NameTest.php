@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TinyBlocks\Country\Alpha2Code;
 use TinyBlocks\Country\Alpha3Code;
+use TinyBlocks\Country\AlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\EmptyCountryName;
 
 final class NameTest extends TestCase

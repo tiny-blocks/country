@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country\Internal;
 
+use TinyBlocks\Country\AlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\EmptyCountryName;
 
 final readonly class Name
 {
-    private array $prepositions;
+    private const array PREPOSITIONS = ['Of', 'And', 'The'];
 
     private function __construct(public string $value)
     {
         if (empty($this->value)) {
             throw new EmptyCountryName();
         }
-
-        $this->prepositions = ['Of', 'And', 'The'];
     }
 
     public static function from(string $name): Name
@@ -26,7 +25,7 @@ final readonly class Name
 
     public static function fromAlphaCode(AlphaCode $alphaCode): Name
     {
-        return self::from(name: $alphaCode->name)->normalizeName();
+        return self::from(name: $alphaCode->getName())->normalizeName();
     }
 
     private function normalizeName(): Name
@@ -34,7 +33,7 @@ final readonly class Name
         $subject = mb_convert_case($this->value, MB_CASE_TITLE);
         $normalized = str_replace('_', ' ', $subject);
 
-        foreach ($this->prepositions as $word) {
+        foreach (self::PREPOSITIONS as $word) {
             $normalized = str_replace($word, strtolower($word), $normalized);
         }
 

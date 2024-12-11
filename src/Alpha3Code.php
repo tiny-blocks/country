@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country;
 
-use TinyBlocks\Country\Internal\AlphaCode;
 use TinyBlocks\Country\Internal\AlphaCodeMapper;
 
 /**
@@ -17,6 +16,8 @@ use TinyBlocks\Country\Internal\AlphaCodeMapper;
 enum Alpha3Code: string implements AlphaCode
 {
     use AlphaCodeMapper;
+
+    public const int CODE_LENGTH = 3;
 
     case AFGHANISTAN = 'AFG';
     case ALAND_ISLANDS = 'ALA';
@@ -259,6 +260,11 @@ enum Alpha3Code: string implements AlphaCode
     case ZAMBIA = 'ZMB';
     case ZIMBABWE = 'ZWE';
     case PALESTINE = 'PSE';
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     public function toAlpha2(): Alpha2Code
     {
