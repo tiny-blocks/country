@@ -14,7 +14,7 @@ final class Alpha2CodeTest extends TestCase
     {
         /** @Given a valid Alpha2 code */
         /** @Then the value should have a length of 2 characters */
-        self::assertSame(2, strlen($value));
+        self::assertSame(Alpha2Code::CODE_LENGTH, strlen($value));
     }
 
     #[DataProvider('dataProviderToAlpha3')]

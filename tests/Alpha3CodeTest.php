@@ -14,7 +14,7 @@ final class Alpha3CodeTest extends TestCase
     {
         /** @Given a valid Alpha3 code */
         /** @Then the value should have a length of 3 characters */
-        self::assertSame(3, strlen($value));
+        self::assertSame(Alpha3Code::CODE_LENGTH, strlen($value));
     }
 
     #[DataProvider('dataProviderToAlpha2')]
