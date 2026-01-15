@@ -8,10 +8,10 @@ use RuntimeException;
 
 final class AlphaCodeNotFound extends RuntimeException
 {
-    public function __construct(string $name)
+    public function __construct(private readonly string $name)
     {
         $template = 'Alpha code with name <%s> not found.';
 
-        parent::__construct(message: sprintf($template, $name));
+        parent::__construct(message: sprintf($template, $this->name));
     }
 }

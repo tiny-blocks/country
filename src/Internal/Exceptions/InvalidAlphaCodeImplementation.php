@@ -8,10 +8,10 @@ use RuntimeException;
 
 final class InvalidAlphaCodeImplementation extends RuntimeException
 {
-    public function __construct(string $class)
+    public function __construct(private readonly string $class)
     {
         $template = 'The alpha code implementation <%s> is invalid.';
 
-        parent::__construct(message: sprintf($template, $class));
+        parent::__construct(message: sprintf($template, $this->class));
     }
 }
