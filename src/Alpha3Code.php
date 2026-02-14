@@ -260,6 +260,11 @@ enum Alpha3Code: string implements AlphaCode
         return $this->name;
     }
 
+    public function toString(): string
+    {
+        return $this->value;
+    }
+
     /**
      * Converts this Alpha-3 code to its corresponding Alpha-2 code.
      *
