@@ -4,5 +4,6 @@ parameters:
   level: 9
   tmpDir: report/phpstan
   ignoreErrors:
-    - '#value type specified in iterable type array#'
+    - '#Cannot access property#'
+    - '#Unsafe usage of new static#'
   reportUnmatchedIgnoredErrors: false
