@@ -10,8 +10,11 @@
         "vo",
         "psr",
         "country",
+        "iso-3166",
+        "timezones",
         "tiny-blocks",
-        "value-object"
+        "value-object",
+        "iana-timezone"
     ],
     "authors": [
         {
@@ -36,7 +39,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "TinyBlocks\\Country\\": "tests/"
+            "Test\\TinyBlocks\\Country\\": "tests/"
         }
     },
     "require": {

@@ -4,47 +4,79 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country;
 
+use TinyBlocks\Country\Internal\CountryNameNormalizer;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCodeImplementation;
-use TinyBlocks\Country\Internal\Name;
 use TinyBlocks\Vo\ValueObject;
 use TinyBlocks\Vo\ValueObjectBehavior;
 
-final readonly class Country implements ValueObject
+/**
+ * Value Object representing a country using ISO-3166 specifications.
+ *
+ * Carries the country name, both alpha codes, and all IANA timezones for the country.
+ */
+class Country implements ValueObject
 {
     use ValueObjectBehavior;
 
-    private function __construct(public string $name, public Alpha2Code $alpha2, public Alpha3Code $alpha3)
-    {
+    private const int ALPHA2_CODE_LENGTH = 2;
+
+    private function __construct(
+        public readonly string $name,
+        public readonly Alpha2Code $alpha2,
+        public readonly Alpha3Code $alpha3,
+        public readonly Timezones $timezones
+    ) {
     }
 
-    public static function from(AlphaCode $alphaCode, ?string $name = null): Country
+    /**
+     * Creates a Country from an AlphaCode instance.
+     *
+     * @param AlphaCode $alphaCode An Alpha2Code or Alpha3Code instance.
+     * @param string|null $name Optional custom country name. If null or empty, the name is derived from the enum case.
+     * @return static The created Country instance.
+     * @throws InvalidAlphaCodeImplementation If the AlphaCode is not Alpha2Code or Alpha3Code.
+     */
+    public static function from(AlphaCode $alphaCode, ?string $name = null): static
     {
-        $name = empty($name)
-            ? Name::fromAlphaCode(alphaCode: $alphaCode)->value
-            : Name::from(name: $name)->value;
+        $resolvedName = empty($name)
+            ? CountryNameNormalizer::fromEnumName(enumName: $alphaCode->getName())
+            : $name;
 
-        if ($alphaCode instanceof Alpha2Code) {
-            return new Country(name: $name, alpha2: $alphaCode, alpha3: $alphaCode->toAlpha3());
-        }
+        $resolveAlphaPair = static fn(): array => match (true) {
+            $alphaCode instanceof Alpha2Code => [$alphaCode, $alphaCode->toAlpha3()],
+            $alphaCode instanceof Alpha3Code => [$alphaCode->toAlpha2(), $alphaCode],
+            default                          => throw new InvalidAlphaCodeImplementation(class: $alphaCode::class)
+        };
 
-        if ($alphaCode instanceof Alpha3Code) {
-            return new Country(name: $name, alpha2: $alphaCode->toAlpha2(), alpha3: $alphaCode);
-        }
+        [$alpha2, $alpha3] = $resolveAlphaPair();
 
-        throw new InvalidAlphaCodeImplementation(class: $alphaCode::class);
+        return new static(
+            name: $resolvedName,
+            alpha2: $alpha2,
+            alpha3: $alpha3,
+            timezones: Timezones::fromAlpha2(alpha2: $alpha2)
+        );
     }
 
-    public static function fromString(string $alphaCode, ?string $name = null): Country
+    /**
+     * Creates a Country from a string alpha code (Alpha-2 or Alpha-3).
+     *
+     * @param string $alphaCode The alpha code string (e.g. 'US' or 'USA').
+     * @param string|null $name Optional custom country name.
+     * @return static The created Country instance.
+     * @throws InvalidAlphaCode If the string does not match any known Alpha-2 or Alpha-3 code.
+     */
+    public static function fromString(string $alphaCode, ?string $name = null): static
     {
-        $alphaCodeFrom = strlen($alphaCode) === Alpha2Code::CODE_LENGTH
+        $resolved = strlen($alphaCode) === self::ALPHA2_CODE_LENGTH
             ? Alpha2Code::tryFrom(value: $alphaCode)
             : Alpha3Code::tryFrom(value: $alphaCode);
 
-        if (is_null($alphaCodeFrom)) {
+        if (is_null($resolved)) {
             throw new InvalidAlphaCode(alphaCode: $alphaCode);
         }
 
-        return self::from(alphaCode: $alphaCodeFrom, name: $name);
+        return static::from(alphaCode: $resolved, name: $name);
     }
 }

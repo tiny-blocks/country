@@ -6,13 +6,14 @@ namespace TinyBlocks\Country;
 
 /**
  * Defines the contract for classes representing alpha codes of countries.
+ *
+ * @see https://www.iso.org/iso-3166-country-codes.html
  */
 interface AlphaCode
 {
     /**
-     * Gets the name associated with the alpha code.
-     *
-     * @return string The name of the country or region corresponding to the code.
+     * Gets the enum case name associated with the alpha code (e.g. BRAZIL, UNITED_STATES_OF_AMERICA).
+     * @return string The name of the enum case representing the alpha code.
      */
     public function getName(): string;
 }

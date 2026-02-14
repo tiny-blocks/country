@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country;
 
-use TinyBlocks\Country\Internal\AlphaCodeMapper;
-
 /**
- * Alpha-2 code – a two-letter code that represents a country name, recommended as the general purpose code.
+ * Alpha-2 code – a two-letter code that represents a country name,
+ * recommended as the general purpose code.
  *
  * @see https://www.iso.org/iso-3166-country-codes.html
  * @see https://www.iso.org/glossary-for-iso-3166.html
  */
 enum Alpha2Code: string implements AlphaCode
 {
-    use AlphaCodeMapper;
-
-    public const int CODE_LENGTH = 2;
-
     case AFGHANISTAN = 'AF';
     case ALAND_ISLANDS = 'AX';
     case ALBANIA = 'AL';
@@ -265,9 +260,18 @@ enum Alpha2Code: string implements AlphaCode
         return $this->name;
     }
 
+    /**
+     * Converts this Alpha-2 code to its corresponding Alpha-3 code.
+     *
+     * @return Alpha3Code The corresponding Alpha-3 code.
+     */
     public function toAlpha3(): Alpha3Code
     {
-        $value = $this->getBy(name: $this->name, alphaCodes: Alpha3Code::cases())->value;
-        return Alpha3Code::from(value: $value);
+        return Alpha3Code::from(
+            value: array_find(
+                Alpha3Code::cases(),
+                fn(Alpha3Code $alpha3): bool => $alpha3->name === $this->name
+            )->value
+        );
     }
 }
