@@ -40,6 +40,8 @@ of a country that groups the codes, its name, and all its IANA timezones.
 A two-letter code that represents a country name, recommended as the general purpose code.
 
 ```php
+use TinyBlocks\Country\Alpha2Code;
+
 $alpha2Code = Alpha2Code::UNITED_STATES_OF_AMERICA;
 
 $alpha2Code->name;              # UNITED_STATES_OF_AMERICA
@@ -52,6 +54,8 @@ $alpha2Code->toAlpha3()->value; # USA
 A three-letter code that represents a country name, which is usually more closely related to the country name.
 
 ```php
+use TinyBlocks\Country\Alpha3Code;
+
 $alpha3Code = Alpha3Code::UNITED_STATES_OF_AMERICA;
 
 $alpha3Code->name;              # UNITED_STATES_OF_AMERICA
@@ -74,6 +78,9 @@ Optionally, you can pass the name of the country. If no name is provided, the de
 country name.
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
+
 $country = Country::from(alphaCode: Alpha2Code::UNITED_STATES_OF_AMERICA);
 
 $country->name;          # United States of America
@@ -82,6 +89,9 @@ $country->alpha3->value; # USA
 ```
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha3Code;
+
 $country = Country::from(alphaCode: Alpha3Code::UNITED_STATES_OF_AMERICA);
 
 $country->name;          # United States of America
@@ -92,6 +102,9 @@ $country->alpha3->value; # USA
 If you want to specify a custom name:
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha3Code;
+
 $country = Country::from(alphaCode: Alpha3Code::UNITED_STATES_OF_AMERICA, name: 'United States');
 
 $country->name;          # United States
@@ -105,6 +118,8 @@ Alternatively, you can create a `Country` instance using the `fromString` method
 `Alpha-3` code as a string.
 
 ```php
+use TinyBlocks\Country\Country;
+
 $country = Country::fromString(alphaCode: 'US');
 
 $country->name;          # United States of America
@@ -115,6 +130,8 @@ $country->alpha3->value; # USA
 You can also pass a custom country name:
 
 ```php
+use TinyBlocks\Country\Country;
+
 $country = Country::fromString(alphaCode: 'USA', name: 'United States');
 
 $country->name;          # United States
@@ -128,6 +145,9 @@ Every `Country` includes an immutable `Timezones` collection, built from the IAN
 integration).
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
+
 $country = Country::from(alphaCode: Alpha2Code::BRAZIL);
 
 $country->timezones->count();      # 4
@@ -148,6 +168,9 @@ $country->timezones->all(); # [Timezone("America/Noronha"), Timezone("America/Be
 Returns the primary timezone (first in the IANA list). Falls back to `UTC` for territories without an assigned timezone:
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
+
 $country = Country::from(alphaCode: Alpha2Code::JAPAN);
 $country->timezones->default(); # Timezone("Asia/Tokyo")
 
@@ -160,6 +183,9 @@ $country->timezones->default(); # Timezone("UTC")
 Searches for a specific IANA identifier within the country's timezones:
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
+
 $country = Country::from(alphaCode: Alpha2Code::UNITED_STATES_OF_AMERICA);
 
 $country->timezones->findByIdentifier(iana: 'America/New_York'); # Timezone("America/New_York")
@@ -169,6 +195,9 @@ $country->timezones->findByIdentifier(iana: 'Asia/Tokyo');       # null
 #### Checking if a timezone belongs to the country
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
+
 $country = Country::from(alphaCode: Alpha2Code::JAPAN);
 
 $country->timezones->contains(iana: 'Asia/Tokyo');       # true
@@ -180,6 +209,8 @@ $country->timezones->contains(iana: 'America/New_York'); # false
 A `Timezone` is a Value Object representing a single valid IANA timezone identifier.
 
 ```php
+use TinyBlocks\Country\Timezone;
+
 $timezone = Timezone::from(identifier: 'America/Sao_Paulo');
 
 $timezone->value;      # America/Sao_Paulo
@@ -189,6 +220,8 @@ $timezone->toString(); # America/Sao_Paulo
 Creating a UTC timezone:
 
 ```php
+use TinyBlocks\Country\Timezone;
+
 $timezone = Timezone::utc();
 
 $timezone->value; # UTC
