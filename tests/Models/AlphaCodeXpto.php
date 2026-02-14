@@ -14,4 +14,9 @@ enum AlphaCodeXpto: string implements AlphaCode
     {
         return $this->value;
     }
+
+    public function toString(): string
+    {
+        return $this->value;
+    }
 }

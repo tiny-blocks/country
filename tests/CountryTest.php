@@ -122,6 +122,26 @@ final class CountryTest extends TestCase
         self::assertSame(Alpha3Code::SWITZERLAND, $country->alpha3);
     }
 
+    #[DataProvider('alphaCodeToStringDataProvider')]
+    public function testCountryAlphaCodeToStringReturnsValue(
+        Alpha2Code $alpha2,
+        string $expectedAlpha2String,
+        string $expectedAlpha3String
+    ): void {
+        /** @Given a Country created from an Alpha-2 code */
+        $country = Country::from(alphaCode: $alpha2);
+
+        /** @When calling toString on each alpha code */
+        $alpha2String = $country->alpha2->toString();
+        $alpha3String = $country->alpha3->toString();
+
+        /** @Then the Alpha-2 toString should return the two-letter code */
+        self::assertSame($expectedAlpha2String, $alpha2String);
+
+        /** @And the Alpha-3 toString should return the three-letter code */
+        self::assertSame($expectedAlpha3String, $alpha3String);
+    }
+
     public function testCountryFromStringWithAlpha2Code(): void
     {
         /** @Given a valid two-letter alpha code string */
@@ -219,14 +239,11 @@ final class CountryTest extends TestCase
         /** @When searching for a known timezone identifier */
         $timezone = $country->timezones->findByIdentifier(iana: 'America/New_York');
 
-        /** @Then a Timezone object should be returned */
-        self::assertInstanceOf(Timezone::class, $timezone);
-
-        /** @And its value should match the searched identifier */
+        /** @Then the returned Timezone value should match the searched identifier */
         self::assertSame('America/New_York', $timezone->value);
     }
 
-    public function testCountryTimezonesFindByIdentifierReturnsNullWhenNotFound(): void
+    public function testCountryTimezonesFindByIdentifierReturnsUtcWhenNotFound(): void
     {
         /** @Given a Country created from Alpha-2 code DE (Germany) */
         $country = Country::from(alphaCode: Alpha2Code::GERMANY);
@@ -234,8 +251,8 @@ final class CountryTest extends TestCase
         /** @When searching for a timezone that does not belong to Germany */
         $timezone = $country->timezones->findByIdentifier(iana: 'Asia/Tokyo');
 
-        /** @Then null should be returned */
-        self::assertNull($timezone);
+        /** @Then the fallback UTC timezone should be returned */
+        self::assertSame('UTC', $timezone->value);
     }
 
     public function testCountryTimezonesCountMatchesAllSize(): void
@@ -299,7 +316,7 @@ final class CountryTest extends TestCase
 
         /** @And each timezone should be findable by its identifier */
         foreach ($country->timezones->all() as $timezone) {
-            self::assertNotNull($country->timezones->findByIdentifier(iana: $timezone->value));
+            self::assertSame($timezone->value, $country->timezones->findByIdentifier(iana: $timezone->value)->value);
         }
     }
 
@@ -316,7 +333,7 @@ final class CountryTest extends TestCase
         self::assertSame($first->timezones->count(), $second->timezones->count());
     }
 
-    public function testCountryWhenInvalidTimezoneIdentifier(): void
+    public function testCountryWhenInvalidTimezone(): void
     {
         /** @Given a non-empty string that is not a valid IANA timezone */
         $invalidIdentifier = 'Invalid/Timezone';
@@ -370,48 +387,48 @@ final class CountryTest extends TestCase
     public static function alphaCodeObjectsDataProvider(): array
     {
         return [
-            'Alpha2 with custom name'   => [
-                'alphaCode'      => Alpha2Code::UNITED_STATES_OF_AMERICA,
-                'name'           => 'United States',
-                'expectedName'   => 'United States',
-                'expectedAlpha2' => Alpha2Code::UNITED_STATES_OF_AMERICA,
-                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA,
-            ],
-            'Alpha3 with custom name'   => [
-                'alphaCode'      => Alpha3Code::UNITED_STATES_OF_AMERICA,
-                'name'           => 'United States',
-                'expectedName'   => 'United States',
-                'expectedAlpha2' => Alpha2Code::UNITED_STATES_OF_AMERICA,
-                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA,
-            ],
             'Alpha2 with null name'     => [
                 'alphaCode'      => Alpha2Code::BRAZIL,
                 'name'           => null,
                 'expectedName'   => 'Brazil',
                 'expectedAlpha2' => Alpha2Code::BRAZIL,
-                'expectedAlpha3' => Alpha3Code::BRAZIL,
+                'expectedAlpha3' => Alpha3Code::BRAZIL
             ],
             'Alpha3 with null name'     => [
                 'alphaCode'      => Alpha3Code::BRAZIL,
                 'name'           => null,
                 'expectedName'   => 'Brazil',
                 'expectedAlpha2' => Alpha2Code::BRAZIL,
-                'expectedAlpha3' => Alpha3Code::BRAZIL,
+                'expectedAlpha3' => Alpha3Code::BRAZIL
+            ],
+            'Alpha2 with custom name'   => [
+                'alphaCode'      => Alpha2Code::UNITED_STATES_OF_AMERICA,
+                'name'           => 'United States',
+                'expectedName'   => 'United States',
+                'expectedAlpha2' => Alpha2Code::UNITED_STATES_OF_AMERICA,
+                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA
+            ],
+            'Alpha3 with custom name'   => [
+                'alphaCode'      => Alpha3Code::UNITED_STATES_OF_AMERICA,
+                'name'           => 'United States',
+                'expectedName'   => 'United States',
+                'expectedAlpha2' => Alpha2Code::UNITED_STATES_OF_AMERICA,
+                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA
             ],
             'Alpha2 GB with full name'  => [
                 'alphaCode'      => Alpha2Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND,
                 'name'           => 'United Kingdom of Great Britain and Northern Ireland',
                 'expectedName'   => 'United Kingdom of Great Britain and Northern Ireland',
                 'expectedAlpha2' => Alpha2Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND,
-                'expectedAlpha3' => Alpha3Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND,
+                'expectedAlpha3' => Alpha3Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND
             ],
             'Alpha3 GBR with null name' => [
                 'alphaCode'      => Alpha3Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND,
                 'name'           => null,
                 'expectedName'   => 'United Kingdom of Great Britain and Northern Ireland',
                 'expectedAlpha2' => Alpha2Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND,
-                'expectedAlpha3' => Alpha3Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND,
-            ],
+                'expectedAlpha3' => Alpha3Code::UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND
+            ]
         ];
     }
 
@@ -423,43 +440,74 @@ final class CountryTest extends TestCase
                 'name'           => 'United States',
                 'expectedName'   => 'United States',
                 'expectedAlpha2' => Alpha2Code::UNITED_STATES_OF_AMERICA,
-                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA,
+                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA
             ],
             'Alpha3 string USA'              => [
                 'alphaCode'      => 'USA',
                 'name'           => 'United States',
                 'expectedName'   => 'United States',
                 'expectedAlpha2' => Alpha2Code::UNITED_STATES_OF_AMERICA,
-                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA,
+                'expectedAlpha3' => Alpha3Code::UNITED_STATES_OF_AMERICA
             ],
             'Alpha2 string with null name'   => [
                 'alphaCode'      => 'BR',
                 'name'           => null,
                 'expectedName'   => 'Brazil',
                 'expectedAlpha2' => Alpha2Code::BRAZIL,
-                'expectedAlpha3' => Alpha3Code::BRAZIL,
+                'expectedAlpha3' => Alpha3Code::BRAZIL
             ],
             'Alpha3 string with null name'   => [
                 'alphaCode'      => 'BRA',
                 'name'           => null,
                 'expectedName'   => 'Brazil',
                 'expectedAlpha2' => Alpha2Code::BRAZIL,
-                'expectedAlpha3' => Alpha3Code::BRAZIL,
+                'expectedAlpha3' => Alpha3Code::BRAZIL
             ],
             'Alpha2 string with custom name' => [
                 'alphaCode'      => 'BR',
                 'name'           => 'Brasil',
                 'expectedName'   => 'Brasil',
                 'expectedAlpha2' => Alpha2Code::BRAZIL,
-                'expectedAlpha3' => Alpha3Code::BRAZIL,
+                'expectedAlpha3' => Alpha3Code::BRAZIL
             ],
             'Alpha3 string with custom name' => [
                 'alphaCode'      => 'BRA',
                 'name'           => 'Brasil',
                 'expectedName'   => 'Brasil',
                 'expectedAlpha2' => Alpha2Code::BRAZIL,
-                'expectedAlpha3' => Alpha3Code::BRAZIL,
+                'expectedAlpha3' => Alpha3Code::BRAZIL
+            ]
+        ];
+    }
+
+    public static function alphaCodeToStringDataProvider(): array
+    {
+        return [
+            'Japan'         => [
+                'alpha2'               => Alpha2Code::JAPAN,
+                'expectedAlpha2String' => 'JP',
+                'expectedAlpha3String' => 'JPN'
             ],
+            'Brazil'        => [
+                'alpha2'               => Alpha2Code::BRAZIL,
+                'expectedAlpha2String' => 'BR',
+                'expectedAlpha3String' => 'BRA'
+            ],
+            'Germany'       => [
+                'alpha2'               => Alpha2Code::GERMANY,
+                'expectedAlpha2String' => 'DE',
+                'expectedAlpha3String' => 'DEU'
+            ],
+            'Switzerland'   => [
+                'alpha2'               => Alpha2Code::SWITZERLAND,
+                'expectedAlpha2String' => 'CH',
+                'expectedAlpha3String' => 'CHE'
+            ],
+            'United States' => [
+                'alpha2'               => Alpha2Code::UNITED_STATES_OF_AMERICA,
+                'expectedAlpha2String' => 'US',
+                'expectedAlpha3String' => 'USA'
+            ]
         ];
     }
 
@@ -469,7 +517,7 @@ final class CountryTest extends TestCase
             'Single character' => ['alphaCode' => 'X'],
             'Two characters'   => ['alphaCode' => 'XY'],
             'Three characters' => ['alphaCode' => 'XYZ'],
-            'Four characters'  => ['alphaCode' => 'XYZ1'],
+            'Four characters'  => ['alphaCode' => 'XYZ1']
         ];
     }
 }

@@ -16,4 +16,10 @@ interface AlphaCode
      * @return string The name of the enum case representing the alpha code.
      */
     public function getName(): string;
+
+    /**
+     * Gets the alpha code value (e.g. 'BR' for Alpha-2, 'BRA' for Alpha-3).
+     * @return string The alpha code value.
+     */
+    public function toString(): string;
 }
