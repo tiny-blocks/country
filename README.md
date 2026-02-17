@@ -140,8 +140,8 @@ $country->alpha3->value; # USA
 
 ### Timezones
 
-Every `Country` includes an immutable `Timezones` collection, built from the IANA timezone database (via PHP's ICU
-integration).
+Every `Country` includes an immutable `CountryTimezones` collection, built from the IANA timezone database (via PHP's
+ICU integration).
 
 ```php
 use TinyBlocks\Country\Country;
@@ -159,6 +159,11 @@ $country->timezones->toStrings();  # ["America/Noronha", "America/Belem", "Ameri
 Returns all `Timezone` objects for the country:
 
 ```php
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
+
+$country = Country::from(alphaCode: Alpha2Code::BRAZIL);
+
 $country->timezones->all(); # [Timezone("America/Noronha"), Timezone("America/Belem"), ...]
 ```
 
@@ -179,16 +184,17 @@ $country->timezones->default(); # Timezone("UTC")
 
 #### Finding a timezone by identifier with UTC fallback
 
-Searches for a specific IANA identifier within the collection. Returns UTC if not found.
+Searches for a specific IANA identifier within the country's timezones. Returns UTC if not found.
 
 ```php
-use TinyBlocks\Time\Timezones;
+use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Alpha2Code;
 
-$timezones = Timezones::fromStrings('UTC', 'America/Sao_Paulo', 'Asia/Tokyo');
+$country = Country::from(alphaCode: Alpha2Code::UNITED_STATES_OF_AMERICA);
 
-$timezones->findByIdentifierOrUtc(iana: 'Asia/Tokyo');     # Timezone("Asia/Tokyo")
-$timezones->findByIdentifierOrUtc(iana: 'Europe/London');  # Timezone("UTC")
-``` 
+$country->timezones->findByIdentifierOrUtc(iana: 'America/New_York'); # Timezone("America/New_York")
+$country->timezones->findByIdentifierOrUtc(iana: 'Asia/Tokyo');       # Timezone("UTC")
+```
 
 #### Checking if a timezone belongs to the country
 
