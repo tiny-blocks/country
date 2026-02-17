@@ -13,8 +13,7 @@ use TinyBlocks\Country\AlphaCode;
 use TinyBlocks\Country\Country;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCode;
 use TinyBlocks\Country\Internal\Exceptions\InvalidAlphaCodeImplementation;
-use TinyBlocks\Country\Internal\Exceptions\InvalidTimezone;
-use TinyBlocks\Country\Timezone;
+use TinyBlocks\Time\Timezone;
 
 final class CountryTest extends TestCase
 {
@@ -231,28 +230,16 @@ final class CountryTest extends TestCase
         self::assertFalse($country->timezones->contains(iana: 'America/New_York'));
     }
 
-    public function testCountryTimezonesFindByIdentifierReturnsTimezone(): void
+    public function testCountryTimezonesFindByIdentifierOrUtcReturnsTimezone(): void
     {
         /** @Given a Country created from Alpha-2 code US */
         $country = Country::from(alphaCode: Alpha2Code::UNITED_STATES_OF_AMERICA);
 
         /** @When searching for a known timezone identifier */
-        $timezone = $country->timezones->findByIdentifier(iana: 'America/New_York');
+        $timezone = $country->timezones->findByIdentifierOrUtc(iana: 'America/New_York');
 
         /** @Then the returned Timezone value should match the searched identifier */
         self::assertSame('America/New_York', $timezone->value);
-    }
-
-    public function testCountryTimezonesFindByIdentifierReturnsUtcWhenNotFound(): void
-    {
-        /** @Given a Country created from Alpha-2 code DE (Germany) */
-        $country = Country::from(alphaCode: Alpha2Code::GERMANY);
-
-        /** @When searching for a timezone that does not belong to Germany */
-        $timezone = $country->timezones->findByIdentifier(iana: 'Asia/Tokyo');
-
-        /** @Then the fallback UTC timezone should be returned */
-        self::assertSame('UTC', $timezone->value);
     }
 
     public function testCountryTimezonesCountMatchesAllSize(): void
@@ -316,7 +303,7 @@ final class CountryTest extends TestCase
 
         /** @And each timezone should be findable by its identifier */
         foreach ($country->timezones->all() as $timezone) {
-            self::assertSame($timezone->value, $country->timezones->findByIdentifier(iana: $timezone->value)->value);
+            self::assertSame($timezone->value, $country->timezones->findByIdentifierOrUtc(iana: $timezone->value)->value);
         }
     }
 
@@ -331,30 +318,6 @@ final class CountryTest extends TestCase
 
         /** @And their counts should match */
         self::assertSame($first->timezones->count(), $second->timezones->count());
-    }
-
-    public function testCountryWhenInvalidTimezone(): void
-    {
-        /** @Given a non-empty string that is not a valid IANA timezone */
-        $invalidIdentifier = 'Invalid/Timezone';
-
-        /** @Then an InvalidTimezone exception should be thrown */
-        $this->expectException(InvalidTimezone::class);
-        $this->expectExceptionMessage(sprintf('Timezone <%s> is invalid.', $invalidIdentifier));
-
-        /** @When trying to create a Timezone from the invalid identifier */
-        Timezone::from(identifier: $invalidIdentifier);
-    }
-
-    public function testCountryWhenEmptyTimezoneIdentifier(): void
-    {
-        /** @Given an empty string as timezone identifier */
-        /** @Then an InvalidTimezone exception should be thrown */
-        $this->expectException(InvalidTimezone::class);
-        $this->expectExceptionMessage('Timezone <> is invalid.');
-
-        /** @When trying to create a Timezone from an empty string */
-        Timezone::from(identifier: '');
     }
 
     #[DataProvider('invalidAlphaCodeStringsDataProvider')]

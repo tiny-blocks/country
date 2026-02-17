@@ -44,6 +44,7 @@
     },
     "require": {
         "php": "^8.5",
+        "tiny-blocks/time": "^1.1",
         "tiny-blocks/value-object": "^3.2"
     },
     "require-dev": {
