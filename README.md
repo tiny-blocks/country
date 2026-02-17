@@ -9,7 +9,6 @@
     * [Alpha3Code](#alpha3code)
     * [Country](#country-1)
     * [Timezones](#timezones)
-    * [Timezone](#timezone)
 * [License](#license)
 * [Contributing](#contributing)
 
@@ -178,19 +177,18 @@ $country = Country::from(alphaCode: Alpha2Code::BOUVET_ISLAND);
 $country->timezones->default(); # Timezone("UTC")
 ```
 
-#### Finding a timezone by identifier
+#### Finding a timezone by identifier with UTC fallback
 
-Searches for a specific IANA identifier within the country's timezones:
+Searches for a specific IANA identifier within the collection. Returns UTC if not found.
 
 ```php
-use TinyBlocks\Country\Country;
-use TinyBlocks\Country\Alpha2Code;
+use TinyBlocks\Time\Timezones;
 
-$country = Country::from(alphaCode: Alpha2Code::UNITED_STATES_OF_AMERICA);
+$timezones = Timezones::fromStrings('UTC', 'America/Sao_Paulo', 'Asia/Tokyo');
 
-$country->timezones->findByIdentifier(iana: 'America/New_York'); # Timezone("America/New_York")
-$country->timezones->findByIdentifier(iana: 'Asia/Tokyo');       # null
-```
+$timezones->findByIdentifierOrUtc(iana: 'Asia/Tokyo');     # Timezone("Asia/Tokyo")
+$timezones->findByIdentifierOrUtc(iana: 'Europe/London');  # Timezone("UTC")
+``` 
 
 #### Checking if a timezone belongs to the country
 
@@ -202,29 +200,6 @@ $country = Country::from(alphaCode: Alpha2Code::JAPAN);
 
 $country->timezones->contains(iana: 'Asia/Tokyo');       # true
 $country->timezones->contains(iana: 'America/New_York'); # false
-```
-
-### Timezone
-
-A `Timezone` is a Value Object representing a single valid IANA timezone identifier.
-
-```php
-use TinyBlocks\Country\Timezone;
-
-$timezone = Timezone::from(identifier: 'America/Sao_Paulo');
-
-$timezone->value;      # America/Sao_Paulo
-$timezone->toString(); # America/Sao_Paulo
-```
-
-Creating a UTC timezone:
-
-```php
-use TinyBlocks\Country\Timezone;
-
-$timezone = Timezone::utc();
-
-$timezone->value; # UTC
 ```
 
 <div id='license'></div>

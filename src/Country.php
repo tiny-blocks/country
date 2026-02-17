@@ -25,7 +25,7 @@ class Country implements ValueObject
         public readonly string $name,
         public readonly Alpha2Code $alpha2,
         public readonly Alpha3Code $alpha3,
-        public readonly Timezones $timezones
+        public readonly CountryTimezones $timezones
     ) {
     }
 
@@ -55,7 +55,7 @@ class Country implements ValueObject
             name: $resolvedName,
             alpha2: $alpha2,
             alpha3: $alpha3,
-            timezones: Timezones::fromAlpha2(alpha2: $alpha2)
+            timezones: CountryTimezones::fromAlpha2(alpha2: $alpha2)
         );
     }
 
