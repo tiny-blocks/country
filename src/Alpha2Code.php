@@ -272,11 +272,13 @@ enum Alpha2Code: string implements AlphaCode
      */
     public function toAlpha3(): Alpha3Code
     {
-        return Alpha3Code::from(
-            value: array_find(
-                Alpha3Code::cases(),
-                fn(Alpha3Code $alpha3): bool => $alpha3->name === $this->name
-            )->value
+        static $nameToAlpha3 = null;
+
+        $nameToAlpha3 ??= array_combine(
+            array_map(static fn(Alpha3Code $alpha3): string => $alpha3->name, Alpha3Code::cases()),
+            Alpha3Code::cases()
         );
+
+        return $nameToAlpha3[$this->name];
     }
 }
