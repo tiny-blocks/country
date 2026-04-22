@@ -16,8 +16,12 @@
 
 ## Overview
 
-Value Object representing a country using [ISO-3166 specifications](https://www.iso.org/iso-3166-country-codes.html),
-with built-in support for [IANA timezones](https://www.iana.org).
+Provides an [ISO-3166](https://www.iso.org/iso-3166-country-codes.html) country value object for PHP, carrying Alpha-2
+and Alpha-3 codes along with all [IANA timezones](https://www.iana.org) associated with the country. Supports
+construction from either alpha
+code variant and automatic conversion between them. Built on top of the tiny-blocks value-object contract to guarantee
+immutability and structural equality.
+
 
 <div id='installation'></div>
 
