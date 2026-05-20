@@ -5,39 +5,42 @@ declare(strict_types=1);
 namespace TinyBlocks\Country;
 
 use Countable;
-use TinyBlocks\Country\Internal\TimezoneCatalog;
+use DateTimeZone;
 use TinyBlocks\Time\Timezone;
 use TinyBlocks\Time\Timezones;
 use TinyBlocks\Vo\ValueObject;
 use TinyBlocks\Vo\ValueObjectBehavior;
 
 /**
- * Immutable collection of Timezone objects for a country.
+ * Collection of Timezone objects for a country.
  *
- * Built from PHP's ICU/IANA timezone database — the authoritative source for timezone data.
- * The first element is considered the default/primary timezone for the country.
+ * Built from PHP's ICU/IANA timezone database, the authoritative source for timezone data.
+ * The first entry is the default (primary) timezone for the country.
  */
 final readonly class CountryTimezones implements ValueObject, Countable
 {
     use ValueObjectBehavior;
 
-    private function __construct(private Timezones $timezones, private Timezone $default)
+    private function __construct(private Timezone $default, private Timezones $timezones)
     {
     }
 
     /**
-     * Creates a CountryTimezones instance from an Alpha-2 country code.
+     * Creates a CountryTimezones from an Alpha-2 country code.
      *
      * @param Alpha2Code $alpha2 The Alpha-2 country code (e.g. "US" for United States).
-     * @return CountryTimezones A new CountryTimezones instance containing the timezones for the specified country.
+     * @return CountryTimezones A new instance containing the timezones for the specified country.
      */
     public static function fromAlpha2(Alpha2Code $alpha2): CountryTimezones
     {
-        $identifiers = TimezoneCatalog::forAlpha2(alpha2Value: $alpha2->value);
+        $identifiers = DateTimeZone::listIdentifiers(
+            timezoneGroup: DateTimeZone::PER_COUNTRY,
+            countryCode: $alpha2->value
+        );
         $timezones = Timezones::fromStrings(...$identifiers);
         $default = $timezones->all()[0] ?? Timezone::utc();
 
-        return new CountryTimezones(timezones: $timezones, default: $default);
+        return new CountryTimezones(default: $default, timezones: $timezones);
     }
 
     /**
@@ -63,8 +66,8 @@ final readonly class CountryTimezones implements ValueObject, Countable
     /**
      * Returns the default (primary) Timezone for this country.
      *
-     * The first identifier returned by the IANA database is used as the default.
-     * Falls back to UTC when no timezone is available.
+     * The first identifier returned by the IANA database is used as the default. Falls back to
+     * UTC when no timezone is available.
      *
      * @return Timezone The default timezone for the country.
      */
@@ -74,17 +77,7 @@ final readonly class CountryTimezones implements ValueObject, Countable
     }
 
     /**
-     * Returns all timezone identifiers as plain strings.
-     *
-     * @return list<string> The list of IANA timezone identifier strings.
-     */
-    public function toStrings(): array
-    {
-        return $this->timezones->toStrings();
-    }
-
-    /**
-     * Checks whether the given IANA identifier belongs to this country's timezones.
+     * Tells whether the given IANA identifier belongs to this country's timezones.
      *
      * @param string $iana The IANA timezone identifier to check (e.g. America/New_York).
      * @return bool True if the identifier belongs to this country, false otherwise.
@@ -103,5 +96,15 @@ final readonly class CountryTimezones implements ValueObject, Countable
     public function findByIdentifierOrUtc(string $iana): Timezone
     {
         return $this->timezones->findByIdentifierOrUtc(iana: $iana);
+    }
+
+    /**
+     * Returns all timezone identifiers as plain strings.
+     *
+     * @return list<string> The list of IANA timezone identifier strings.
+     */
+    public function toStrings(): array
+    {
+        return $this->timezones->toStrings();
     }
 }

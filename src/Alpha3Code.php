@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace TinyBlocks\Country;
 
 /**
- * Alpha-3 code – a three-letter code that represents a country name,
- * which is usually more closely related to the country name.
+ * Alpha-3 code, a three-letter code that represents a country name, usually more closely related
+ * to the country name than its Alpha-2 counterpart.
  *
  * @see https://www.iso.org/iso-3166-country-codes.html
  * @see https://www.iso.org/glossary-for-iso-3166.html
  */
-enum Alpha3Code: string implements AlphaCode
+enum Alpha3Code: string implements CountryCode
 {
     case AFGHANISTAN = 'AFG';
-    case ALAND_ISLANDS = 'ALA';
     case ALBANIA = 'ALB';
     case ALGERIA = 'DZA';
     case AMERICAN_SAMOA = 'ASM';
@@ -40,6 +39,7 @@ enum Alpha3Code: string implements AlphaCode
     case BERMUDA = 'BMU';
     case BHUTAN = 'BTN';
     case BOLIVIA = 'BOL';
+    case BONAIRE_SINT_EUSTATIUS_AND_SABA = 'BES';
     case BOSNIA_AND_HERZEGOVINA = 'BIH';
     case BOTSWANA = 'BWA';
     case BOUVET_ISLAND = 'BVT';
@@ -49,7 +49,7 @@ enum Alpha3Code: string implements AlphaCode
     case BULGARIA = 'BGR';
     case BURKINA_FASO = 'BFA';
     case BURUNDI = 'BDI';
-    case CAPE_VERDE = 'CPV';
+    case CABO_VERDE = 'CPV';
     case CAMBODIA = 'KHM';
     case CAMEROON = 'CMR';
     case CANADA = 'CAN';
@@ -62,32 +62,33 @@ enum Alpha3Code: string implements AlphaCode
     case COCOS_KEELING_ISLANDS = 'CCK';
     case COLOMBIA = 'COL';
     case COMOROS = 'COM';
+    case DEMOCRATIC_REPUBLIC_OF_THE_CONGO = 'COD';
     case CONGO = 'COG';
     case COOK_ISLANDS = 'COK';
     case COSTA_RICA = 'CRI';
-    case COTE_D_IVOIRE = 'CIV';
     case CROATIA = 'HRV';
     case CUBA = 'CUB';
+    case CURACAO = 'CUW';
     case CYPRUS = 'CYP';
-    case CZECH_REPUBLIC = 'CZE';
+    case CZECHIA = 'CZE';
+    case COTE_D_IVOIRE = 'CIV';
     case DENMARK = 'DNK';
     case DJIBOUTI = 'DJI';
     case DOMINICA = 'DMA';
     case DOMINICAN_REPUBLIC = 'DOM';
-    case EAST_TIMOR = 'TMP';
     case ECUADOR = 'ECU';
     case EGYPT = 'EGY';
     case EL_SALVADOR = 'SLV';
     case EQUATORIAL_GUINEA = 'GNQ';
     case ERITREA = 'ERI';
     case ESTONIA = 'EST';
+    case ESWATINI = 'SWZ';
     case ETHIOPIA = 'ETH';
-    case MALVINAS = 'FLK';
+    case FALKLAND_ISLANDS = 'FLK';
     case FAROE_ISLANDS = 'FRO';
     case FIJI = 'FJI';
     case FINLAND = 'FIN';
     case FRANCE = 'FRA';
-    case FRANCE_METROPOLITAN = 'FXX';
     case FRENCH_GUIANA = 'GUF';
     case FRENCH_POLYNESIA = 'PYF';
     case FRENCH_SOUTHERN_TERRITORIES = 'ATF';
@@ -103,11 +104,13 @@ enum Alpha3Code: string implements AlphaCode
     case GUADELOUPE = 'GLP';
     case GUAM = 'GUM';
     case GUATEMALA = 'GTM';
+    case GUERNSEY = 'GGY';
     case GUINEA = 'GIN';
     case GUINEA_BISSAU = 'GNB';
     case GUYANA = 'GUY';
     case HAITI = 'HTI';
     case HEARD_ISLAND_AND_MCDONALD_ISLANDS = 'HMD';
+    case HOLY_SEE = 'VAT';
     case HONDURAS = 'HND';
     case HONG_KONG = 'HKG';
     case HUNGARY = 'HUN';
@@ -117,10 +120,12 @@ enum Alpha3Code: string implements AlphaCode
     case IRAN = 'IRN';
     case IRAQ = 'IRQ';
     case IRELAND = 'IRL';
+    case ISLE_OF_MAN = 'IMN';
     case ISRAEL = 'ISR';
     case ITALY = 'ITA';
     case JAMAICA = 'JAM';
     case JAPAN = 'JPN';
+    case JERSEY = 'JEY';
     case JORDAN = 'JOR';
     case KAZAKHSTAN = 'KAZ';
     case KENYA = 'KEN';
@@ -139,7 +144,6 @@ enum Alpha3Code: string implements AlphaCode
     case LITHUANIA = 'LTU';
     case LUXEMBOURG = 'LUX';
     case MACAU = 'MAC';
-    case MACEDONIA = 'MKD';
     case MADAGASCAR = 'MDG';
     case MALAWI = 'MWI';
     case MALAYSIA = 'MYS';
@@ -156,6 +160,7 @@ enum Alpha3Code: string implements AlphaCode
     case MOLDOVA = 'MDA';
     case MONACO = 'MCO';
     case MONGOLIA = 'MNG';
+    case MONTENEGRO = 'MNE';
     case MONTSERRAT = 'MSR';
     case MOROCCO = 'MAR';
     case MOZAMBIQUE = 'MOZ';
@@ -164,7 +169,6 @@ enum Alpha3Code: string implements AlphaCode
     case NAURU = 'NRU';
     case NEPAL = 'NPL';
     case NETHERLANDS = 'NLD';
-    case NETHERLANDS_ANTILLES = 'ANT';
     case NEW_CALEDONIA = 'NCL';
     case NEW_ZEALAND = 'NZL';
     case NICARAGUA = 'NIC';
@@ -172,11 +176,13 @@ enum Alpha3Code: string implements AlphaCode
     case NIGERIA = 'NGA';
     case NIUE = 'NIU';
     case NORFOLK_ISLAND = 'NFK';
+    case NORTH_MACEDONIA = 'MKD';
     case NORTHERN_MARIANA_ISLANDS = 'MNP';
     case NORWAY = 'NOR';
     case OMAN = 'OMN';
     case PAKISTAN = 'PAK';
     case PALAU = 'PLW';
+    case PALESTINE = 'PSE';
     case PANAMA = 'PAN';
     case PAPUA_NEW_GUINEA = 'PNG';
     case PARAGUAY = 'PRY';
@@ -187,35 +193,39 @@ enum Alpha3Code: string implements AlphaCode
     case PORTUGAL = 'PRT';
     case PUERTO_RICO = 'PRI';
     case QATAR = 'QAT';
-    case REUNION = 'REU';
-    case ROMANIA = 'ROM';
+    case ROMANIA = 'ROU';
     case RUSSIA = 'RUS';
     case RWANDA = 'RWA';
+    case REUNION = 'REU';
+    case SAINT_BARTHELEMY = 'BLM';
+    case ST_HELENA = 'SHN';
     case SAINT_KITTS_AND_NEVIS = 'KNA';
     case SAINT_LUCIA = 'LCA';
+    case SAINT_MARTIN_FRENCH_PART = 'MAF';
+    case ST_PIERRE_AND_MIQUELON = 'SPM';
     case SAINT_VINCENT_AND_THE_GRENADINES = 'VCT';
     case SAMOA = 'WSM';
     case SAN_MARINO = 'SMR';
     case SAO_TOME_AND_PRINCIPE = 'STP';
     case SAUDI_ARABIA = 'SAU';
     case SENEGAL = 'SEN';
+    case SERBIA = 'SRB';
     case SEYCHELLES = 'SYC';
     case SIERRA_LEONE = 'SLE';
     case SINGAPORE = 'SGP';
+    case SINT_MAARTEN_DUTCH_PART = 'SXM';
     case SLOVAKIA = 'SVK';
     case SLOVENIA = 'SVN';
     case SOLOMON_ISLANDS = 'SLB';
     case SOMALIA = 'SOM';
     case SOUTH_AFRICA = 'ZAF';
     case SOUTH_GEORGIA_AND_THE_SOUTH_SANDWICH_ISLANDS = 'SGS';
+    case SOUTH_SUDAN = 'SSD';
     case SPAIN = 'ESP';
     case SRI_LANKA = 'LKA';
-    case ST_HELENA = 'SHN';
-    case ST_PIERRE_AND_MIQUELON = 'SPM';
     case SUDAN = 'SDN';
     case SURINAME = 'SUR';
     case SVALBARD_AND_JAN_MAYEN_ISLANDS = 'SJM';
-    case SWAZILAND = 'SWZ';
     case SWEDEN = 'SWE';
     case SWITZERLAND = 'CHE';
     case SYRIAN_ARAB_REPUBLIC = 'SYR';
@@ -223,25 +233,25 @@ enum Alpha3Code: string implements AlphaCode
     case TAJIKISTAN = 'TJK';
     case TANZANIA = 'TZA';
     case THAILAND = 'THA';
+    case TIMOR_LESTE = 'TLS';
     case TOGO = 'TGO';
     case TOKELAU = 'TKL';
     case TONGA = 'TON';
     case TRINIDAD_AND_TOBAGO = 'TTO';
     case TUNISIA = 'TUN';
-    case TURKEY = 'TUR';
     case TURKMENISTAN = 'TKM';
     case TURKS_AND_CAICOS_ISLANDS = 'TCA';
     case TUVALU = 'TUV';
+    case TURKIYE = 'TUR';
     case UGANDA = 'UGA';
     case UKRAINE = 'UKR';
     case UNITED_ARAB_EMIRATES = 'ARE';
     case UNITED_KINGDOM_OF_GREAT_BRITAIN_AND_NORTHERN_IRELAND = 'GBR';
-    case UNITED_STATES_OF_AMERICA = 'USA';
     case UNITED_STATES_MINOR_OUTLYING_ISLANDS = 'UMI';
+    case UNITED_STATES_OF_AMERICA = 'USA';
     case URUGUAY = 'URY';
     case UZBEKISTAN = 'UZB';
     case VANUATU = 'VUT';
-    case VATICAN_CITY_STATE = 'VAT';
     case VENEZUELA = 'VEN';
     case VIETNAM = 'VNM';
     case VIRGIN_ISLANDS_BRITISH = 'VGB';
@@ -249,36 +259,32 @@ enum Alpha3Code: string implements AlphaCode
     case WALLIS_AND_FUTUNA_ISLANDS = 'WLF';
     case WESTERN_SAHARA = 'ESH';
     case YEMEN = 'YEM';
-    case YUGOSLAVIA = 'YUG';
-    case ZAIRE = 'ZAR';
     case ZAMBIA = 'ZMB';
     case ZIMBABWE = 'ZWE';
-    case PALESTINE = 'PSE';
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function toString(): string
-    {
-        return $this->value;
-    }
+    case ALAND_ISLANDS = 'ALA';
 
     /**
-     * Converts this Alpha-3 code to its corresponding Alpha-2 code.
+     * Returns the Alpha-2 code that represents the same country.
      *
      * @return Alpha2Code The corresponding Alpha-2 code.
      */
     public function toAlpha2(): Alpha2Code
     {
-        static $nameToAlpha2 = null;
+        return Alpha2Code::{$this->name};
+    }
 
-        $nameToAlpha2 ??= array_combine(
-            array_map(static fn(Alpha2Code $alpha2): string => $alpha2->name, Alpha2Code::cases()),
-            Alpha2Code::cases()
-        );
+    /**
+     * Returns the numeric code that represents the same country.
+     *
+     * @return NumericCode The corresponding numeric code.
+     */
+    public function toNumeric(): NumericCode
+    {
+        return NumericCode::{$this->name};
+    }
 
-        return $nameToAlpha2[$this->name];
+    public function toString(): string
+    {
+        return $this->value;
     }
 }
