@@ -4,14 +4,14 @@
     "license": "MIT",
     "type": "library",
     "keywords": [
-        "tiny-blocks",
         "iana",
         "country",
         "alpha-2",
         "alpha-3",
         "numeric",
         "timezone",
-        "iso-3166-1"
+        "iso-3166-1",
+        "tiny-blocks"
     ],
     "authors": [
         {
