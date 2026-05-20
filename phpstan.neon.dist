@@ -1,9 +1,26 @@
 parameters:
-  paths:
-    - src
-  level: 9
-  tmpDir: report/phpstan
-  ignoreErrors:
-    - '#Cannot access property#'
-    - '#Unsafe usage of new static#'
-  reportUnmatchedIgnoredErrors: false
+    level: max
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        # Country is an extension point that uses late static binding in named factories.
+        - identifier: new.static
+          path: src/Country.php
+
+        # Dynamic class constant fetch on a sibling enum by shared case name; PHPStan cannot
+        # infer the constant's value type, but every Alpha2Code/Alpha3Code/NumericCode case
+        # name is mirrored across the three enums by construction.
+        - identifier: return.type
+          path: src/Alpha2Code.php
+
+        - identifier: return.type
+          path: src/Alpha3Code.php
+
+        - identifier: return.type
+          path: src/NumericCode.php
+
+        # Test data providers in tests/ where PHPDoc is prohibited per testing rules.
+        - identifier: missingType.iterableValue
+          path: tests/Unit/CountryTest.php
+    reportUnmatchedIgnoredErrors: true
