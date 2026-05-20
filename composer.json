@@ -1,8 +1,18 @@
 {
     "name": "tiny-blocks/country",
-    "description": "Provides an ISO-3166 country value object for PHP, with Alpha-2, Alpha-3, and IANA timezone resolution.",
+    "description": "Provides an ISO 3166-1 country value object for PHP, with Alpha-2, Alpha-3, numeric, and IANA timezone resolution.",
     "license": "MIT",
     "type": "library",
+    "keywords": [
+        "iana",
+        "country",
+        "alpha-2",
+        "alpha-3",
+        "numeric",
+        "timezone",
+        "iso-3166-1",
+        "tiny-blocks"
+    ],
     "authors": [
         {
             "name": "Gustavo Freze de Araujo Santos",
@@ -16,12 +26,12 @@
     },
     "require": {
         "php": "^8.5",
-        "tiny-blocks/time": "^1.5",
-        "tiny-blocks/value-object": "^4.0"
+        "tiny-blocks/time": "^2.0",
+        "tiny-blocks/value-object": "^5.0"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.51",
-        "infection/infection": "^0.32",
+        "ergebnis/composer-normalize": "^2.52",
+        "infection/infection": "^0.33",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^13.1",
         "squizlabs/php_codesniffer": "^4.0"
@@ -46,22 +56,22 @@
         "sort-packages": true
     },
     "scripts": {
-        "mutation-test": "php ./vendor/bin/infection --threads=max --logger-html=report/coverage/mutation-report.html --coverage=report/coverage",
-        "phpcs": "php ./vendor/bin/phpcs --standard=PSR12 --extensions=php ./src",
-        "phpstan": "php ./vendor/bin/phpstan analyse -c phpstan.neon.dist --quiet --no-progress",
+        "configure": [
+            "@composer install --optimize-autoloader",
+            "@composer normalize"
+        ],
+        "configure-and-update": [
+            "@composer update --optimize-autoloader",
+            "@composer normalize"
+        ],
         "review": [
-            "@phpcs",
-            "@phpstan"
+            "@php ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php ./src ./tests",
+            "@php ./vendor/bin/phpstan analyse -c phpstan.neon.dist --quiet --no-progress"
         ],
-        "test": "php -d memory_limit=2G ./vendor/bin/phpunit --configuration phpunit.xml tests",
-        "test-file": "php ./vendor/bin/phpunit --configuration phpunit.xml --no-coverage --filter",
-        "test-no-coverage": "php ./vendor/bin/phpunit --configuration phpunit.xml --no-coverage tests",
+        "test-file": "@php ./vendor/bin/phpunit --configuration phpunit.xml --no-coverage --filter",
         "tests": [
-            "@test",
-            "@mutation-test"
-        ],
-        "tests-no-coverage": [
-            "@test-no-coverage"
+            "@php -d memory_limit=2G ./vendor/bin/phpunit --configuration phpunit.xml tests",
+            "@php ./vendor/bin/infection --threads=max --logger-html=reports/coverage/mutation-report.html --coverage=reports/coverage"
         ]
     }
 }

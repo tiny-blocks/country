@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace Test\TinyBlocks\Country\Models;
 
-use TinyBlocks\Country\AlphaCode;
+use TinyBlocks\Country\CountryCode;
 
-enum AlphaCodeXpto: string implements AlphaCode
+enum CountryCodeXpto: string implements CountryCode
 {
     case SWITZERLAND = 'CH';
-
-    public function getName(): string
-    {
-        return $this->value;
-    }
 
     public function toString(): string
     {

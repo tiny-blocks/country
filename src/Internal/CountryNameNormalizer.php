@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country\Internal;
 
-final readonly class CountryNameNormalizer
+final class CountryNameNormalizer
 {
     private const array LOWERCASE_WORDS = ['Of', 'And', 'The'];
 
