@@ -18,6 +18,7 @@ infection.log
 .idea/
 .cursor/
 .vscode/
+__pycache__/
 
 # OS
 Thumbs.db

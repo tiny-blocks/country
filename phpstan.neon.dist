@@ -8,9 +8,9 @@ parameters:
         - identifier: new.static
           path: src/Country.php
 
-        # Dynamic class constant fetch on a sibling enum by shared case name; PHPStan cannot
-        # infer the constant's value type, but every Alpha2Code/Alpha3Code/NumericCode case
-        # name is mirrored across the three enums by construction.
+        # Dynamic class constant fetch on a sibling enum by shared case name; PHPStan cannot infer
+        # the constant's value type, but every Alpha2Code/Alpha3Code/NumericCode case name is
+        # mirrored across the three enums by construction.
         - identifier: return.type
           path: src/Alpha2Code.php
 
@@ -20,7 +20,10 @@ parameters:
         - identifier: return.type
           path: src/NumericCode.php
 
-        # Test data providers in tests/ where PHPDoc is prohibited per testing rules.
+        # Test data providers in tests/ where PHPDoc is prohibited per the testing rules.
         - identifier: missingType.iterableValue
           path: tests/Unit/CountryTest.php
+
+        - identifier: missingType.iterableValue
+          path: tests/Unit/CountryCodeTest.php
     reportUnmatchedIgnoredErrors: true

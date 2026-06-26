@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country\Exceptions;
 
-use RuntimeException;
+use DomainException;
 
-final class InvalidCountryCode extends RuntimeException
+final class InvalidCountryCode extends DomainException
 {
     public function __construct(string $code)
     {

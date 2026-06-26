@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country;
 
+use ValueError;
+
 /**
  * Alpha-3 code, a three-letter code that represents a country name, usually more closely related
  * to the country name than its Alpha-2 counterpart.
@@ -264,27 +266,45 @@ enum Alpha3Code: string implements CountryCode
     case ALAND_ISLANDS = 'ALA';
 
     /**
-     * Returns the Alpha-2 code that represents the same country.
+     * Creates an Alpha3Code from its string value.
      *
-     * @return Alpha2Code The corresponding Alpha-2 code.
+     * @param string $code The Alpha-3 code (e.g. 'BRA').
+     * @return Alpha3Code The created Alpha3Code.
+     * @throws ValueError If the code matches no known Alpha-3 code.
      */
+    public static function fromString(string $code): Alpha3Code
+    {
+        return Alpha3Code::from($code);
+    }
+
+    /**
+     * Creates an Alpha3Code from its string value, or null when the code is unknown.
+     *
+     * @param string $code The Alpha-3 code (e.g. 'BRA').
+     * @return Alpha3Code|null The created Alpha3Code, or null when the code matches nothing.
+     */
+    public static function tryFromString(string $code): ?Alpha3Code
+    {
+        return Alpha3Code::tryFrom($code);
+    }
+
     public function toAlpha2(): Alpha2Code
     {
         return Alpha2Code::{$this->name};
     }
 
-    /**
-     * Returns the numeric code that represents the same country.
-     *
-     * @return NumericCode The corresponding numeric code.
-     */
-    public function toNumeric(): NumericCode
+    public function toAlpha3(): Alpha3Code
     {
-        return NumericCode::{$this->name};
+        return $this;
     }
 
     public function toString(): string
     {
         return $this->value;
+    }
+
+    public function toNumeric(): NumericCode
+    {
+        return NumericCode::{$this->name};
     }
 }

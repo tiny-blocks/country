@@ -1,6 +1,6 @@
 {
     "name": "tiny-blocks/country",
-    "description": "Provides an ISO 3166-1 country value object for PHP, with Alpha-2, Alpha-3, numeric, and IANA timezone resolution.",
+    "description": "Provides ISO 3166-1 country and ISO 3166-2 subdivision value objects for PHP, with Alpha-2, Alpha-3, numeric, and IANA timezone resolution.",
     "license": "MIT",
     "type": "library",
     "keywords": [
@@ -11,6 +11,8 @@
         "numeric",
         "timezone",
         "iso-3166-1",
+        "iso-3166-2",
+        "subdivision",
         "tiny-blocks"
     ],
     "authors": [
@@ -26,13 +28,14 @@
     },
     "require": {
         "php": "^8.5",
-        "tiny-blocks/time": "^2.0",
+        "tiny-blocks/collection": "^2.5",
+        "tiny-blocks/time": "^2.3",
         "tiny-blocks/value-object": "^5.0"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.52",
         "infection/infection": "^0.33",
-        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^13.1",
         "squizlabs/php_codesniffer": "^4.0"
     },

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country;
 
+use ValueError;
+
 /**
  * Alpha-2 code, a two-letter code that represents a country name, recommended as the general
  * purpose code.
@@ -264,27 +266,45 @@ enum Alpha2Code: string implements CountryCode
     case ALAND_ISLANDS = 'AX';
 
     /**
-     * Returns the Alpha-3 code that represents the same country.
+     * Creates an Alpha2Code from its string value.
      *
-     * @return Alpha3Code The corresponding Alpha-3 code.
+     * @param string $code The Alpha-2 code (e.g. 'BR').
+     * @return Alpha2Code The created Alpha2Code.
+     * @throws ValueError If the code matches no known Alpha-2 code.
      */
+    public static function fromString(string $code): Alpha2Code
+    {
+        return Alpha2Code::from($code);
+    }
+
+    /**
+     * Creates an Alpha2Code from its string value, or null when the code is unknown.
+     *
+     * @param string $code The Alpha-2 code (e.g. 'BR').
+     * @return Alpha2Code|null The created Alpha2Code, or null when the code matches nothing.
+     */
+    public static function tryFromString(string $code): ?Alpha2Code
+    {
+        return Alpha2Code::tryFrom($code);
+    }
+
+    public function toAlpha2(): Alpha2Code
+    {
+        return $this;
+    }
+
     public function toAlpha3(): Alpha3Code
     {
         return Alpha3Code::{$this->name};
     }
 
-    /**
-     * Returns the numeric code that represents the same country.
-     *
-     * @return NumericCode The corresponding numeric code.
-     */
-    public function toNumeric(): NumericCode
-    {
-        return NumericCode::{$this->name};
-    }
-
     public function toString(): string
     {
         return $this->value;
+    }
+
+    public function toNumeric(): NumericCode
+    {
+        return NumericCode::{$this->name};
     }
 }

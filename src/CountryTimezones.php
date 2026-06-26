@@ -33,10 +33,7 @@ final readonly class CountryTimezones implements ValueObject, Countable
      */
     public static function fromAlpha2(Alpha2Code $alpha2): CountryTimezones
     {
-        $identifiers = DateTimeZone::listIdentifiers(
-            timezoneGroup: DateTimeZone::PER_COUNTRY,
-            countryCode: $alpha2->value
-        );
+        $identifiers = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, $alpha2->value);
         $timezones = Timezones::fromStrings(...$identifiers);
         $default = $timezones->all()[0] ?? Timezone::utc();
 
@@ -88,6 +85,16 @@ final readonly class CountryTimezones implements ValueObject, Countable
     }
 
     /**
+     * Returns all timezone identifiers as plain strings.
+     *
+     * @return list<string> The list of IANA timezone identifier strings.
+     */
+    public function toStrings(): array
+    {
+        return $this->timezones->toStrings();
+    }
+
+    /**
      * Finds a Timezone object by its IANA identifier.
      *
      * @param string $iana The IANA timezone identifier to find (e.g. America/New_York).
@@ -96,15 +103,5 @@ final readonly class CountryTimezones implements ValueObject, Countable
     public function findByIdentifierOrUtc(string $iana): Timezone
     {
         return $this->timezones->findByIdentifierOrUtc(iana: $iana);
-    }
-
-    /**
-     * Returns all timezone identifiers as plain strings.
-     *
-     * @return list<string> The list of IANA timezone identifier strings.
-     */
-    public function toStrings(): array
-    {
-        return $this->timezones->toStrings();
     }
 }
