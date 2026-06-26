@@ -2,9 +2,9 @@ name: Security checks
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
     - cron: "0 0 * * *"
 
@@ -25,10 +25,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ "actions" ]
+        language: ["actions"]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v7
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
