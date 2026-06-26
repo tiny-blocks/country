@@ -5,28 +5,30 @@
 * [Overview](#overview)
 * [Installation](#installation)
 * [How to use](#how-to-use)
-    + [Alpha2Code](#alpha2code)
-    + [Alpha3Code](#alpha3code)
-    + [NumericCode](#numericcode)
-    + [Country](#country-1)
+    + [Country codes](#country-codes)
+    + [Country](#country)
         - [Creating from objects](#creating-from-objects)
         - [Creating from string](#creating-from-string)
-        - [Creating from string with safe fallback](#creating-from-string-with-safe-fallback)
+        - [Safe creation](#safe-creation)
+    + [Subdivisions](#subdivisions)
+    + [All countries](#all-countries)
     + [Timezones](#timezones)
-        - [Getting all timezones](#getting-all-timezones)
-        - [Getting the default timezone](#getting-the-default-timezone)
-        - [Finding a timezone by identifier with UTC fallback](#finding-a-timezone-by-identifier-with-utc-fallback)
-        - [Checking if a timezone belongs to the country](#checking-if-a-timezone-belongs-to-the-country)
 * [License](#license)
 * [Contributing](#contributing)
 
 ## Overview
 
-Provides an [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) country value object for PHP, carrying
-Alpha-2,
-Alpha-3, and numeric codes along with all [IANA timezones](https://www.iana.org) associated with the country. Supports
-construction from any of the three code variants and automatic conversion between them. Built on top of the tiny-blocks
-value-object contract to guarantee immutability and structural equality.
+Provides [ISO 3166-1](https://www.iso.org/iso-3166-country-codes.html) country and
+[ISO 3166-2](https://www.iso.org/glossary-for-iso-3166.html) subdivision value objects for PHP. A `Country` is a lazy
+handle over an Alpha-2 code that resolves its name, its Alpha-3 and numeric codes, its
+[IANA timezones](https://www.iana.org), and its subdivisions on demand. A `Subdivision` is the same kind of handle one
+level down, resolving its name, its category, and its owning country from the ISO 3166-2 code.
+
+Construction works from any of the three code variants (Alpha-2, Alpha-3, or numeric), with automatic conversion between
+them. The data is generated from the ISO 3166 standard. Names are the official ISO English short names, so the values
+are stable and citable rather than derived. The library builds on the tiny-blocks value-object contract for immutability
+and structural equality, on tiny-blocks/time for timezones, and on tiny-blocks/collection for the country and
+subdivision collections.
 
 ## Installation
 
@@ -36,12 +38,10 @@ composer require tiny-blocks/country
 
 ## How to use
 
-The library exposes country codes according to ISO 3166-1 specifications. It is possible to create a representation
-of a country that groups the codes, its name, and all its IANA timezones.
+### Country codes
 
-### Alpha2Code
-
-A two-letter code that represents a country name, recommended as the general purpose code.
+Each country has three ISO 3166-1 representations: a two-letter `Alpha2Code`, a three-letter `Alpha3Code`, and a
+three-digit `NumericCode`. Every code converts to the other two and to its string value.
 
 ```php
 <?php
@@ -50,37 +50,15 @@ declare(strict_types=1);
 
 use TinyBlocks\Country\Alpha2Code;
 
-$alpha2Code = Alpha2Code::BRAZIL;
+$alpha2 = Alpha2Code::BRAZIL;
 
-$alpha2Code->name;               # BRAZIL
-$alpha2Code->value;              # BR
-$alpha2Code->toAlpha3()->value;  # BRA
-$alpha2Code->toNumeric()->value; # 076
+$alpha2->value;              # BR
+$alpha2->toAlpha3()->value;  # BRA
+$alpha2->toNumeric()->value; # 076
+$alpha2->toString();         # BR
 ```
 
-### Alpha3Code
-
-A three-letter code that represents a country name, which is usually more closely related to the country name.
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha3Code;
-
-$alpha3Code = Alpha3Code::UNITED_STATES_OF_AMERICA;
-
-$alpha3Code->name;               # UNITED_STATES_OF_AMERICA
-$alpha3Code->value;              # USA
-$alpha3Code->toAlpha2()->value;  # US
-$alpha3Code->toNumeric()->value; # 840
-```
-
-### NumericCode
-
-A three-digit numeric code that represents a country name, defined by ISO 3166-1. Stored as a string to preserve the
-leading zeros published by ISO (e.g. `'004'` for Afghanistan).
+The numeric code keeps the ISO leading zeros as a string and exposes them as an integer through `toInteger`.
 
 ```php
 <?php
@@ -89,28 +67,20 @@ declare(strict_types=1);
 
 use TinyBlocks\Country\NumericCode;
 
-$numericCode = NumericCode::BRAZIL;
+$numeric = NumericCode::BRAZIL;
 
-$numericCode->name;              # BRAZIL
-$numericCode->value;             # 076
-$numericCode->toInteger();       # 76
-$numericCode->toAlpha2()->value; # BR
-$numericCode->toAlpha3()->value; # BRA
+$numeric->value;             # 076
+$numeric->toInteger();       # 76
+$numeric->toAlpha2()->value; # BR
+$numeric->toAlpha3()->value; # BRA
 ```
 
 ### Country
 
-A `Country` instance can be created using an `Alpha-2`, `Alpha-3`, or numeric code, along with an optional country name.
-There are two main methods to create a `Country` object: `from` (which accepts objects) and `fromString` (which accepts
-strings).
-
-Each `Country` automatically carries all its IANA timezones.
+A `Country` can be created from any code object with `from`, or from a string with `fromString`. The name, both alpha
+codes, the numeric code, the timezones, and the subdivisions are read through methods.
 
 #### Creating from objects
-
-You can create a `Country` instance using the `from` method by providing an `Alpha2Code`, `Alpha3Code`, or `NumericCode`
-object. Optionally, you can pass the name of the country. If no name is provided, the default is the English version of
-the country name.
 
 ```php
 <?php
@@ -122,47 +92,13 @@ use TinyBlocks\Country\Country;
 
 $country = Country::from(code: Alpha2Code::BRAZIL);
 
-$country->name;           # Brazil
-$country->alpha2->value;  # BR
-$country->alpha3->value;  # BRA
-$country->numeric->value; # 076
+$country->name();           # Brazil
+$country->alpha2()->value;  # BR
+$country->alpha3()->value;  # BRA
+$country->numeric()->value; # 076
 ```
 
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha3Code;
-use TinyBlocks\Country\Country;
-
-$country = Country::from(code: Alpha3Code::UNITED_STATES_OF_AMERICA);
-
-$country->name;           # United States of America
-$country->alpha2->value;  # US
-$country->alpha3->value;  # USA
-$country->numeric->value; # 840
-```
-
-If you want to specify a custom name:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha2Code;
-use TinyBlocks\Country\Country;
-
-$country = Country::from(code: Alpha2Code::BRAZIL, name: 'Brasil');
-
-$country->name;           # Brasil
-$country->alpha2->value;  # BR
-$country->alpha3->value;  # BRA
-$country->numeric->value; # 076
-```
-
-You can also create a `Country` from a numeric code:
+The same country is produced from its Alpha-3 or numeric code, since `from` canonicalizes to the Alpha-2 code.
 
 ```php
 <?php
@@ -174,16 +110,15 @@ use TinyBlocks\Country\NumericCode;
 
 $country = Country::from(code: NumericCode::UNITED_STATES_OF_AMERICA);
 
-$country->name;           # United States of America
-$country->alpha2->value;  # US
-$country->alpha3->value;  # USA
-$country->numeric->value; # 840
+$country->name();           # United States
+$country->alpha2()->value;  # US
+$country->alpha3()->value;  # USA
 ```
 
 #### Creating from string
 
-Alternatively, you can create a `Country` instance using the `fromString` method, which accepts an `Alpha-2`, `Alpha-3`,
-or numeric code as a string.
+`fromString` accepts an Alpha-2, Alpha-3, or numeric code as a string. It throws `InvalidCountryCode` when the string
+matches no known code.
 
 ```php
 <?php
@@ -192,15 +127,15 @@ declare(strict_types=1);
 
 use TinyBlocks\Country\Country;
 
-$country = Country::fromString(code: 'BR');
-
-$country->name;           # Brazil
-$country->alpha2->value;  # BR
-$country->alpha3->value;  # BRA
-$country->numeric->value; # 076
+Country::fromString(code: 'BR')->name();   # Brazil
+Country::fromString(code: 'USA')->name();  # United States
+Country::fromString(code: '076')->name();  # Brazil
 ```
 
-You can also pass a custom country name:
+#### Safe creation
+
+Use `tryFromString` to validate external input without handling exceptions. It returns `null` when the code matches no
+known Alpha-2, Alpha-3, or numeric code.
 
 ```php
 <?php
@@ -209,15 +144,14 @@ declare(strict_types=1);
 
 use TinyBlocks\Country\Country;
 
-$country = Country::fromString(code: 'USA', name: 'United States');
-
-$country->name;           # United States
-$country->alpha2->value;  # US
-$country->alpha3->value;  # USA
-$country->numeric->value; # 840
+Country::tryFromString(code: 'BR')?->alpha2()->value; # BR
+Country::tryFromString(code: 'XYZ');                  # null
 ```
 
-The string form also accepts the numeric code:
+### Subdivisions
+
+Each `Country` exposes its ISO 3166-2 subdivisions as a `Subdivisions` collection, which may be empty for territories
+that have none. A `Subdivision` can also be created directly from its code with `fromString` or `tryFromString`.
 
 ```php
 <?php
@@ -225,38 +159,52 @@ The string form also accepts the numeric code:
 declare(strict_types=1);
 
 use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Subdivision;
 
-$country = Country::fromString(code: '076');
+$subdivision = Subdivision::fromString(code: 'BR-SP');
 
-$country->name;           # Brazil
-$country->alpha2->value;  # BR
-$country->alpha3->value;  # BRA
-$country->numeric->value; # 076
+$subdivision->code();                                              # BR-SP
+$subdivision->name();                                              # São Paulo
+$subdivision->category()->value;                                   # State
+$subdivision->category()->isState();                               # true
+$subdivision->country()->name();                                   # Brazil
+$subdivision->belongsTo(country: Country::fromString(code: 'BR')); # true
 ```
 
-#### Creating from string with safe fallback
+```php
+<?php
 
-Use `tryFromString` when you want to validate an external input without exception handling. It returns
-`null` if the code does not match any known Alpha-2, Alpha-3, or numeric code.
+declare(strict_types=1);
+
+use TinyBlocks\Country\Alpha2Code;
+use TinyBlocks\Country\Country;
+
+$subdivisions = Country::from(code: Alpha2Code::BRAZIL)->subdivisions();
+
+$subdivisions->count();      # 27
+$subdivisions->isEmpty();    # false
+```
+
+### All countries
+
+`Countries::all` returns every ISO 3166-1 country as a collection of `Country` handles.
 
 ```php
 <?php
 
 declare(strict_types=1);
 
-use TinyBlocks\Country\Country;
+use TinyBlocks\Country\Countries;
 
-$valid = Country::tryFromString(code: 'BR');
-$valid?->alpha2->value;   # BR
+$countries = Countries::all();
 
-$invalid = Country::tryFromString(code: 'XYZ');
-$invalid;                 # null
+$countries->count(); # 249
 ```
 
 ### Timezones
 
-Every `Country` includes an immutable `CountryTimezones` collection, built from the IANA timezone database (via PHP's
-ICU integration).
+Every `Country` exposes a `CountryTimezones` collection, built from the IANA timezone database through PHP. The first
+identifier is the default, and it falls back to `UTC` for territories without an assigned timezone.
 
 ```php
 <?php
@@ -266,82 +214,13 @@ declare(strict_types=1);
 use TinyBlocks\Country\Alpha2Code;
 use TinyBlocks\Country\Country;
 
-$country = Country::from(code: Alpha2Code::BRAZIL);
+$timezones = Country::from(code: Alpha2Code::JAPAN)->timezones();
 
-$country->timezones->count();      # 4
-$country->timezones->default();    # Timezone("America/Noronha")
-$country->timezones->toStrings();  # ["America/Noronha", "America/Belem", "America/Sao_Paulo", ...]
-```
-
-#### Getting all timezones
-
-Returns all `Timezone` objects for the country:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha2Code;
-use TinyBlocks\Country\Country;
-
-$country = Country::from(code: Alpha2Code::BRAZIL);
-
-$country->timezones->all(); # [Timezone("America/Noronha"), Timezone("America/Belem"), ...]
-```
-
-#### Getting the default timezone
-
-Returns the primary timezone (first in the IANA list). Falls back to `UTC` for territories without an assigned timezone:
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha2Code;
-use TinyBlocks\Country\Country;
-
-$country = Country::from(code: Alpha2Code::BRAZIL);
-$country->timezones->default(); # Timezone("America/Noronha")
-
-# Bouvet Island has no IANA timezones, so the default falls back to UTC.
-$country = Country::from(code: Alpha2Code::BOUVET_ISLAND);
-$country->timezones->default(); # Timezone("UTC")
-```
-
-#### Finding a timezone by identifier with UTC fallback
-
-Searches for a specific IANA identifier within the country's timezones. Returns UTC if not found.
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha2Code;
-use TinyBlocks\Country\Country;
-
-$country = Country::from(code: Alpha2Code::UNITED_STATES_OF_AMERICA);
-
-$country->timezones->findByIdentifierOrUtc(iana: 'America/New_York'); # Timezone("America/New_York")
-$country->timezones->findByIdentifierOrUtc(iana: 'Asia/Tokyo');       # Timezone("UTC")
-```
-
-#### Checking if a timezone belongs to the country
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use TinyBlocks\Country\Alpha2Code;
-use TinyBlocks\Country\Country;
-
-$country = Country::from(code: Alpha2Code::BRAZIL);
-
-$country->timezones->contains(iana: 'America/Sao_Paulo'); # true
-$country->timezones->contains(iana: 'America/New_York');  # false
+$timezones->count();                                 # 1
+$timezones->default()->value;                        # Asia/Tokyo
+$timezones->contains(iana: 'Asia/Tokyo');            # true
+$timezones->contains(iana: 'America/New_York');      # false
+$timezones->findByIdentifierOrUtc(iana: 'X')->value; # UTC
 ```
 
 ## License

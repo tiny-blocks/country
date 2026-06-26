@@ -5,19 +5,40 @@ declare(strict_types=1);
 namespace TinyBlocks\Country;
 
 /**
- * Defines the contract for classes representing country codes per ISO 3166-1.
+ * Contract for an ISO 3166-1 country code in any of its three representations.
  *
- * Implementations are expected to be PHP backed enums; the `name` property is satisfied automatically
- * by the enum case identifier.
+ * <p>Implementations are PHP backed enums. Each one converts to the other two representations
+ * and to its string value, so a consumer can treat any code polymorphically.</p>
  *
  * @see https://www.iso.org/iso-3166-country-codes.html
  */
 interface CountryCode
 {
     /**
-     * Returns the country code as its string value.
+     * Returns the equivalent Alpha-2 code.
      *
-     * @return string The country code value (e.g. 'BR' or 'US', 'BRA' or 'USA', '076' or '840').
+     * @return Alpha2Code The Alpha-2 code for the same country.
+     */
+    public function toAlpha2(): Alpha2Code;
+
+    /**
+     * Returns the equivalent Alpha-3 code.
+     *
+     * @return Alpha3Code The Alpha-3 code for the same country.
+     */
+    public function toAlpha3(): Alpha3Code;
+
+    /**
+     * Returns the code as its string value.
+     *
+     * @return string The code value (e.g. 'BR', 'BRA', or '076').
      */
     public function toString(): string;
+
+    /**
+     * Returns the equivalent numeric code.
+     *
+     * @return NumericCode The numeric code for the same country.
+     */
+    public function toNumeric(): NumericCode;
 }

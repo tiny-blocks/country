@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace TinyBlocks\Country;
 
+use ValueError;
+
 /**
  * Numeric code, a three-digit code that represents a country name, defined by ISO 3166-1.
  *
@@ -267,37 +269,55 @@ enum NumericCode: string implements CountryCode
     case ALAND_ISLANDS = '248';
 
     /**
-     * Returns the Alpha-2 code that represents the same country.
+     * Creates a NumericCode from its string value.
      *
-     * @return Alpha2Code The corresponding Alpha-2 code.
+     * @param string $code The numeric code (e.g. '076').
+     * @return NumericCode The created NumericCode.
+     * @throws ValueError If the code matches no known numeric code.
      */
+    public static function fromString(string $code): NumericCode
+    {
+        return NumericCode::from($code);
+    }
+
+    /**
+     * Creates a NumericCode from its string value, or null when the code is unknown.
+     *
+     * @param string $code The numeric code (e.g. '076').
+     * @return NumericCode|null The created NumericCode, or null when the code matches nothing.
+     */
+    public static function tryFromString(string $code): ?NumericCode
+    {
+        return NumericCode::tryFrom($code);
+    }
+
     public function toAlpha2(): Alpha2Code
     {
         return Alpha2Code::{$this->name};
     }
 
-    /**
-     * Returns the Alpha-3 code that represents the same country.
-     *
-     * @return Alpha3Code The corresponding Alpha-3 code.
-     */
     public function toAlpha3(): Alpha3Code
     {
         return Alpha3Code::{$this->name};
     }
 
+    public function toString(): string
+    {
+        return $this->value;
+    }
+
     /**
      * Returns the numeric code as an integer, discarding the leading zeros.
      *
-     * @return int The numeric code value as an integer (e.g. 76 for Brazil, 840 for the United States of America).
+     * @return int The numeric value (e.g. 76 for Brazil, 840 for the United States).
      */
     public function toInteger(): int
     {
         return (int)$this->value;
     }
 
-    public function toString(): string
+    public function toNumeric(): NumericCode
     {
-        return $this->value;
+        return $this;
     }
 }
