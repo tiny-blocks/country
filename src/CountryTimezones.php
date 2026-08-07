@@ -35,7 +35,7 @@ final readonly class CountryTimezones implements ValueObject, Countable
     {
         $identifiers = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, $alpha2->value);
         $timezones = Timezones::fromStrings(...$identifiers);
-        $default = $timezones->all()[0] ?? Timezone::utc();
+        $default = ($timezones->all()[0] ?? Timezone::utc());
 
         return new CountryTimezones(default: $default, timezones: $timezones);
     }
