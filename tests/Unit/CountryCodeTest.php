@@ -10,6 +10,7 @@ use TinyBlocks\Country\Alpha2Code;
 use TinyBlocks\Country\Alpha3Code;
 use TinyBlocks\Country\CountryCode;
 use TinyBlocks\Country\NumericCode;
+use ValueError;
 
 final class CountryCodeTest extends TestCase
 {
@@ -133,7 +134,7 @@ final class CountryCodeTest extends TestCase
             $thrown = false;
             try {
                 $createFromUnknown();
-            } catch (\ValueError) {
+            } catch (ValueError) {
                 $thrown = true;
             }
             self::assertTrue($thrown);
